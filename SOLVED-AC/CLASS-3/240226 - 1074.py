@@ -1,35 +1,28 @@
 # Z
 # 실버 1
-import sys
-sys.setrecursionlimit(10**9)
 
-n, r, c = map(int, input().split())
-mat = [[0 for _ in range(2**n)] for _ in range(2**n)]
-order = 0
+N, R, C = map(int, input().split())
 
 
-def z(x1, y1, x2, y2):
-    # x1 <= x < x2
-    # y1 <= y < y2
+# Z 순서대로 4등분하여, 각각 0 1 2 3사분면
+def z(r, c, size, start):
+    # size * size
+    half = size // 2
+    start_add_value = half ** 2
 
-    global mat, order
-    div = (x2 - x1) // 2
-    if div == 1:
-        mat[y1][x1] = order
-        mat[y1][x1 + 1] = order + 1
-        mat[y1 + 1][x1] = order + 2
+    if size == 1:
+        return start
 
-
-        mat[y1+1][x1+1] = order + 3
-        order += 4
-        return
+    if r < half: # 0, 1
+        if c < half: # 0사분면
+            return z(r, c, half, start)
+        else: # 1사분면
+            return z(r, c - half, half, start + start_add_value)
     else:
-        # print(div)
-        z(x1, y1, x1+div, y1+div)
-        z(x1+div, y1, x2, y1+div)
-        z(x1, y1+div, y1+div, y2)
-        z(x1+div, y1+div, x2, y2)
+        if c < half: # 2사분면
+            return z(r - half, c, half, start + start_add_value * 2)
+        else: # 3사분면
+            return z(r - half, c - half, half, start + start_add_value * 3)
 
-z(0, 0, 2**n, 2**n)
-print(mat)
-print(mat[r][c])
+
+print(z(R, C, 2**N, 0))
