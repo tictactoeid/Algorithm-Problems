@@ -11,6 +11,8 @@ mat = [list(map(int, input().split())) for _ in range(n)]
 
 def get_distance(i1, j1, i2, j2):
     # (i1, j1) -> (i2, j2)
+    if i1 == i2 and j1 == j2:
+        return 0
 
     visited = [[False for _ in range(n)] for _ in range(n)]
     q = deque()
@@ -27,9 +29,11 @@ def get_distance(i1, j1, i2, j2):
                 if x == i2 and y == j2:
                     return dist + 1
 
-                if not visited[x][y] and mat[x][y]:
+                if not visited[x][y] and not mat[x][y]:
                     q.append((x, y, dist+1))
                     visited[x][y] = True
+
+    #print(i2, j2, visited[i2][j2], mat[i2][j2])
     return None
 
 
@@ -58,7 +62,7 @@ def get_closest_customer(i1, j1, customers: dict):
                     min_dist = dist
                     candidates.append((x, y))
 
-                if not visited[x][y] and mat[x][y]:
+                if not visited[x][y] and not mat[x][y]:
                     q.append((x, y, dist+1))
                     visited[x][y] = True
     if not candidates:
@@ -75,8 +79,9 @@ for i in range(m):
     a, b, c, d = map(int, input().split())
     customers[(a-1, b-1)] = (c-1, d-1)
 
-i, j = car
+
 while customers:
+    i, j = car
     customer = get_closest_customer(i, j, customers)
     if customer is None:
         if customers:
@@ -91,13 +96,31 @@ while customers:
         sys.exit()
 
     i2, j2 = customers[(i, j)]  # 목적지로 이동
+
+
+
     dist2 = get_distance(i, j, i2, j2)
+    if dist2 is None:
+        if customers:
+            print(-1)
+            sys.exit()
+        else:
+            break
     oil -= dist2
     if oil < 0:  # 도착과 동시에 0이 되는 경우는 성공
         print(-1)
         sys.exit()
 
-    oil +=
+    #oil += (dist1 + dist2) * 2
+    oil += dist2 * 2
+
+    #print(customers, i, j, i2, j2, dist1, dist2, oil)
+
+    customers.pop((i, j))
+    car = (i2, j2)
+
+print(oil)
+
 
 
 
