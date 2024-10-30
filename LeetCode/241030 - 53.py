@@ -42,3 +42,4 @@ class Solution:
 
     def maxSubArray(self, nums: List[int]) -> int:
         return self.findMax(nums, 0, len(nums) - 1)
+    
